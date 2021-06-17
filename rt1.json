@@ -1,0 +1,101 @@
+{
+  "/v2/resource-tokens/{resource-token-id}": {
+    "get": {
+      "tags": [
+        "Resource Tokens"
+      ],
+      "operationId": "GET__v2_resource_tokens_resource_token_id_",
+      "summary": " ",
+      "responses": {
+        "2XX": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "$ref": "#/components/schemas/resource_tokens__response"
+                  },
+                  "included": {
+                    "$ref": "#/components/schemas/resource_tokens__included"
+                  }
+                },
+                "required": [
+                  "data",
+                  "included"
+                ]
+              }
+            }
+          },
+          "description": "TODO"
+        },
+        "401": {
+          "description": "This can also occur when your JWT has expired.",
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "$ref": "#/components/schemas/jsonapi__errors"
+              }
+            }
+          }
+        },
+        "403": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "$ref": "#/components/schemas/jsonapi__errors"
+              }
+            }
+          },
+          "description": "TODO"
+        },
+        "404": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "$ref": "#/components/schemas/jsonapi__errors"
+              }
+            }
+          },
+          "description": "TODO"
+        },
+        "500": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "$ref": "#/components/schemas/jsonapi__errors"
+              }
+            }
+          },
+          "description": "TODO"
+        }
+      },
+      "parameters": [
+        {
+          "name": "include",
+          "in": "query",
+          "explode": false,
+          "style": "form",
+          "schema": {
+            "$ref": "#/components/schemas/resource_tokens__include"
+          }
+        },
+        {
+          "style": "simple",
+          "in": "path",
+          "name": "resource-token-id",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/types__uuid_v4"
+          }
+        }
+      ],
+      "security": [
+        {
+          "JWT": []
+        }
+      ],
+      "description": ""
+    }
+  }
+}
