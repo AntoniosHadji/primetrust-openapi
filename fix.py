@@ -157,5 +157,132 @@ for o in final["components"]["schemas"]["rules__rule_type_info"]["oneOf"]:
         if o["$ref"] == "#/components/schemas/Frequency Rule":
             o["$ref"] = "#/components/schemas/Frequency_Rule"
 
+# patterns errors
+for o in final["components"]["schemas"]["uploaded_documents__create"]["allOf"]:
+    if o.get("properties") and "extension" in o["properties"]:
+        o["properties"]["extension"]["pattern"] = "/^\.?[a-z]{2,5}$/i"
+
+# converted to javascript \A = ^ \Z = $ multiline off by default
+regex = "/(^manual_review_required$)|(((^|_)auto|_manual)_check_failed$)/"
+final["components"]["schemas"]["cip_checks__update"]["properties"]["exceptions"][
+    "items"
+]["pattern"] = regex
+
+
 with open("./openapi.json", "w") as f:
     json.dump(final, f, indent=2, default=str)
+
+
+#      "cip_checks__update": {
+#        "title": "Cip Checks: Update",
+#        "type": "object",
+#        "properties": {
+#          "exception-details": {
+#            "type": "string"
+#          },
+#          "exceptions": {
+#            "type": "array",
+#            "items": {
+#              "type": "string",
+#              "pattern": "((manual_review_required)|(((|_)auto|_manual)_check_failed))"
+#            }
+#          }
+#        },
+#        "description": ""
+#      },
+
+
+#       "uploaded_documents__create": {
+#         "title": "Uploaded Documents: Create",
+#         "allOf": [
+#           {
+#             "type": "object",
+#             "properties": {
+#               "allow-download": {
+#                 "type": "boolean"
+#               },
+#               "public": {
+#                 "type": "boolean"
+#               },
+#               "label": {
+#                 "type": "string"
+#               },
+#               "description": {
+#                 "type": "string"
+#               }
+#             }
+#           },
+#           {
+#             "type": "object",
+#             "properties": {
+#               "file": {
+#                 "$ref": "#/components/schemas/types__binary"
+#               },
+#               "extension": {
+#                 "type": "string",
+#                 "pattern": "/\.?[a-z]{2,5}/i"
+#               },
+#               "mime-type": {
+#                 "type": "string"
+#               }
+#             },
+#             "required": [
+#               "file"
+#             ]
+#           },
+#           {
+#             "oneOf": [
+#               {
+#                 "type": "object",
+#                 "properties": {
+#                   "account-id": {
+#                     "$ref": "#/components/schemas/types__uuid_v4"
+#                   }
+#                 },
+#                 "required": [
+#                   "account-id"
+#                 ],
+#                 "title": "For an Account"
+#               },
+#               {
+#                 "type": "object",
+#                 "properties": {
+#                   "contact-id": {
+#                     "$ref": "#/components/schemas/types__uuid_v4"
+#                   }
+#                 },
+#                 "required": [
+#                   "contact-id"
+#                 ],
+#                 "title": "For a Contact"
+#               },
+#               {
+#                 "type": "object",
+#                 "properties": {
+#                   "account-risk-review-id": {
+#                     "$ref": "#/components/schemas/types__uuid_v4"
+#                   }
+#                 },
+#                 "required": [
+#                   "account-risk-review-id"
+#                 ],
+#                 "title": "For an Account Risk Review"
+#               },
+#               {
+#                 "type": "object",
+#                 "properties": {
+#                   "funds-transfer-id": {
+#                     "$ref": "#/components/schemas/types__uuid_v4"
+#                   }
+#                 },
+#                 "required": [
+#                   "funds-transfer-id"
+#                 ],
+#                 "title": "For a Funds Transfer"
+#               }
+#             ]
+#           }
+#         ],
+#         "description": ""
+#       },
+#
