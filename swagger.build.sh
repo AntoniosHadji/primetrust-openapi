@@ -7,7 +7,8 @@
 
 docker run -it --rm -v "${PWD}:/local" \
   swaggerapi/swagger-codegen-cli validate\
-   -i /local/primetrust-public-resolved.json
+   -i /local/openapi.json
+   # -i /local/primetrust-public-resolved.json
 
 #     -l java \
 #     -o /local/client/java
