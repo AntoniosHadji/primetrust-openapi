@@ -215,7 +215,8 @@ for c in data[key]:
 #  58251:26    error  oas3-schema
 # `pattern` property should match format `regex`.
 # components.schemas.cip_checks__update_idm.properties.exceptions.items.pattern
-# "pattern": "(?-mix:(\\Amanual_review_required\\Z)|(((\\A|_)auto|_manual)_check_failed\\Z))"
+# "pattern":
+# "(?-mix:(\\Amanual_review_required\\Z)|(((\\A|_)auto|_manual)_check_failed\\Z))"
 # 57957
 
 # converted to javascript \A = ^ \Z = $ multiline off by default
