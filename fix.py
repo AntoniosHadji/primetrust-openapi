@@ -83,7 +83,6 @@ for method in data["paths"][p]:
 for p in [
     "/v2/resource-tokens/{resource-token-id}/accounts",
     "/v2/resource-tokens/{resource-token-id}/contacts",
-    "/v2/resource-tokens/{resource-token-id}/ira-rollover-forms",
     "/v2/resource-tokens/{resource-token-id}/uploaded-documents",
 ]:
     for method in data["paths"][p]:
