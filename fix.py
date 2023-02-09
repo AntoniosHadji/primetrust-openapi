@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 
 
@@ -28,6 +29,38 @@ print(data.keys())
 del data["paths"]["/v2/resource-tokens/{hash}"]
 del data["paths"]["/v2/contributions/{hash}"]
 
+# remove trailing slash in dictionary key
+data["paths"]["/v2/contributions"] = data["paths"].pop("/v2/contributions/")
+# fix missing right brace
+data["paths"]["/v2/banks/{bank_id}/address"] = data["paths"].pop(
+    "/v2/banks/{bank_id/address"
+)
+
+# empty enum
+data["components"]["schemas"]["state_withholding_rule__states"]["enum"] = ["DC"]
+
+# add discriminators
+data["components"]["schemas"]["contacts__update"]["discriminator"] = {
+    "propertyName": "contact-type"
+}
+data["components"]["schemas"]["contacts__create"]["discriminator"][
+    "propertyName"
+] = "contact-type"
+data["components"]["schemas"]["contacts__create_new_account"]["discriminator"] = {
+    "propertyName": "contact-type"
+}
+data["components"]["schemas"]["contacts__create_primary"]["discriminator"] = {
+    "propertyName": "contact-type"
+}
+
+
+# required field (warning)
+data["info"]["contact"] = {
+    "name": "Prime Trust API Support",
+    "url": "https://support.primetrust.com",
+    "email": "support@primetrust.com",
+}
+
 # missing parameter
 for p in [
     "/v2/account-cash-transfer-reviews/{account-cash-transfer-review-id}/from-account",
@@ -38,6 +71,7 @@ for p in [
             uuid("account-cash-transfer-review-id")
         )
 
+
 for p in [
     "/v2/accounts/{account-id}/account-cash-transfers",
     "/v2/accounts/{account-id}/account-histories",
@@ -45,9 +79,50 @@ for p in [
     "/v2/accounts/{account-id}/internal-asset-transfers",
     "/v2/accounts/{account-id}/policy",
     "/v2/accounts/{account-id}/sandbox/fund",
+    "/v2/accounts/{account-id}/holds",
 ]:
     for method in data["paths"][p]:
         data["paths"][p][method]["parameters"].append(uuid("account-id"))
+
+for p in [
+    "/v2/internal-asset-transfer-reviews/{internal-asset-transfer-review-id}/from-account",  # noqa: E501
+    "/v2/internal-asset-transfer-reviews/{internal-asset-transfer-review-id}/to-account",  # noqa: E501
+]:
+    for method in data["paths"][p]:
+        data["paths"][p][method]["parameters"].append(
+            uuid("internal-asset-transfer-review-id")
+        )
+
+for p in [
+    "/v2/resource-tokens/{resource-token-id}/accounts",
+    "/v2/resource-tokens/{resource-token-id}/contacts",
+    "/v2/resource-tokens/{resource-token-id}/uploaded-documents",
+]:
+    for method in data["paths"][p]:
+        data["paths"][p][method]["parameters"].append(uuid("resource-token-id"))
+
+for p in [
+    "/v2/user-invitation-reviews/{user-invitation-review-id}/from-account",
+    "/v2/user-invitation-reviews/{user-invitation-review-id}/to-account",
+]:
+    for method in data["paths"][p]:
+        data["paths"][p][method]["parameters"].append(uuid("user-invitation-review-id"))
+
+p = "/v2/banks/{bank_id}/address"
+for method in data["paths"][p]:
+    data["paths"][p][method]["parameters"].append(uuid("bank_id"))
+
+p = "/v2/contributions/{contribution-id}/failures"
+for method in data["paths"][p]:
+    data["paths"][p][method]["parameters"].append(uuid("contribution-id"))
+
+p = "/v2/credit-card-resources/{credit-card-resource-id}/failures"
+for method in data["paths"][p]:
+    data["paths"][p][method]["parameters"].append(uuid("credit-card-resource-id"))
+
+p = "/v2/trade-settlement-configs/{trade-settlement-config-id}/trade-settlements/{trade-settlement-id}"  # noqa: E501
+for method in data["paths"][p]:
+    data["paths"][p][method]["parameters"].append(uuid("trade-settlement-id"))
 
 p = "/v2/account-types/{account-type-id}/policy"
 for method in data["paths"][p]:
@@ -67,39 +142,20 @@ p = "/v2/funds-transfer-methods/{funds-transfer-method-id}/bank"
 for method in data["paths"][p]:
     data["paths"][p][method]["parameters"].append(uuid("funds-transfer-method-id"))
 
-for p in [
-    "/v2/internal-asset-transfer-reviews/{internal-asset-transfer-review-id}/from-account",  # noqa: E501
-    "/v2/internal-asset-transfer-reviews/{internal-asset-transfer-review-id}/to-account",  # noqa: E501
-]:
-    for method in data["paths"][p]:
-        data["paths"][p][method]["parameters"].append(
-            uuid("internal-asset-transfer-review-id")
-        )
-
 p = "/v2/disbursement-owner-verifications/{resource-token-hash}"
 for method in data["paths"][p]:
     data["paths"][p][method]["parameters"].append(uuid("resource-token-hash"))
 
-for p in [
-    "/v2/resource-tokens/{resource-token-id}/accounts",
-    "/v2/resource-tokens/{resource-token-id}/contacts",
-    "/v2/resource-tokens/{resource-token-id}/uploaded-documents",
-]:
-    for method in data["paths"][p]:
-        data["paths"][p][method]["parameters"].append(uuid("resource-token-id"))
-
-for p in [
-    "/v2/user-invitation-reviews/{user-invitation-review-id}/from-account",
-    "/v2/user-invitation-reviews/{user-invitation-review-id}/to-account",
-]:
-    for method in data["paths"][p]:
-        data["paths"][p][method]["parameters"].append(uuid("user-invitation-review-id"))
 
 key = "paths"
 for p in data[key]:  # noqa: C901
     print("path: ", p)
     for method in data[key][p]:
         k2 = data[key][p][method]
+        if "description" in k2:
+            if k2["description"] == "":
+                data[key][p][method]["description"] = "TODO-method-description"
+
         if "responses" in k2:
             for response in k2["responses"]:
                 if "description" not in k2["responses"][response]:
@@ -145,6 +201,7 @@ for p in data[key]:  # noqa: C901
                                 "application/vnd.api+json"
                             ]["schema"]["title"] = "string"
 
+
 for tag in data["tags"]:
     if tag["description"] == "":
         tag["description"] = "TODO: Fill description."
@@ -163,7 +220,7 @@ for o in data["components"]["schemas"]["rules__rule_type_info"]["oneOf"]:
 
 key = "components"
 subkey = "schemas"
-for c in data[key]:
+for c in data[key]:  # noqa: C901
     for s in data[key][subkey]:
         # print(s)
         if s == "types__date":
