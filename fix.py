@@ -36,7 +36,7 @@ data["paths"]["/v2/banks/{bank_id}/address"] = data["paths"].pop(
     "/v2/banks/{bank_id/address"
 )
 
-# empty enum
+# empty enum TODO: DC is just a placeholder.  What should be here?
 data["components"]["schemas"]["state_withholding_rule__states"]["enum"] = ["DC"]
 
 # add discriminators
@@ -53,7 +53,6 @@ data["components"]["schemas"]["contacts__create_primary"]["discriminator"] = {
     "propertyName": "contact-type"
 }
 
-
 # required field (warning)
 data["info"]["contact"] = {
     "name": "Prime Trust API Support",
@@ -61,7 +60,30 @@ data["info"]["contact"] = {
     "email": "support@primetrust.com",
 }
 
-# missing parameter
+# needs security field per redocly-cli lint
+for p in [
+    "/auth/password_reset",
+    "/auth/password_reset/{hash}",
+    "/v2/card-holder-verifications/{hash}",
+    "/v2/card-holder-verifications/{hash}",
+    "/v2/card-holder-verifications/{hash}/request-email-verification",
+    "/v2/card-holder-verifications/{hash}/request-phone-number-verification",
+    "/v2/card-holder-verifications/{hash}/verify-email",
+    "/v2/card-holder-verifications/{hash}/verify-phone-number",
+    "/v2/cards/{hash}/display",
+    "/v2/credit-card-authorization/{hash}",
+    "/v2/credit-card-authorization/{hash}",
+    "/v2/credit-card-authorization/{hash}/verify",
+    "/v2/resource-tokens/{hash}/create-account",
+    "/v2/resource-tokens/{hash}/create-agreement-preview",
+    "/v2/resource-tokens/{hash}/create-contacts",
+    "/v2/resource-tokens/{hash}/upload-document",
+    "/v2/resource-tokens/{hash}/validate",
+]:
+    for method in data["paths"][p]:
+        data["paths"][p][method]["security"] = [{"JWT": []}]
+
+# missing parameters
 for p in [
     "/v2/account-cash-transfer-reviews/{account-cash-transfer-review-id}/from-account",
     "/v2/account-cash-transfer-reviews/{account-cash-transfer-review-id}/to-account",
@@ -156,10 +178,17 @@ for p in data[key]:  # noqa: C901
             if k2["description"] == "":
                 data[key][p][method]["description"] = "TODO-method-description"
 
+        if "security" not in k2:
+            print(f"Needs security field. {p}")
+        else:
+            print(f"{k2['security']} {p}")
+
         if "responses" in k2:
             for response in k2["responses"]:
                 if "description" not in k2["responses"][response]:
-                    data[key][p][method]["responses"][response]["description"] = "TODO"
+                    data[key][p][method]["responses"][response][
+                        "description"
+                    ] = "TODO-response-description"
                 elif k2["responses"][response]["description"] == "":
                     data[key][p][method]["responses"][response][
                         "description"
