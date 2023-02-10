@@ -178,10 +178,10 @@ for p in data[key]:  # noqa: C901
             if k2["description"] == "":
                 data[key][p][method]["description"] = "TODO-method-description"
 
-        if "security" not in k2:
-            print(f"Needs security field. {p}")
-        else:
-            print(f"{k2['security']} {p}")
+        # if "security" not in k2:
+        #     print(f"Needs security field. {p}")
+        # else:
+        #     print(f"{k2['security']} {p}")
 
         if "responses" in k2:
             for response in k2["responses"]:
