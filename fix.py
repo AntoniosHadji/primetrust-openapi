@@ -183,6 +183,7 @@ for p in data[key]:  # noqa: C901
     print("path: ", p)
     for method in data[key][p]:
         k2 = data[key][p][method]
+        data[key][p][method]["summary"] = p
         if "description" in k2:
             if k2["description"] == "":
                 data[key][p][method]["description"] = "TODO-method-description"
