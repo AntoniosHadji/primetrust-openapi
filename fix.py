@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import json
 
+import requests
+
 
 def uuid(name):
     return {
@@ -12,8 +14,15 @@ def uuid(name):
     }
 
 
-with open("./primetrust-public-resolved.json", "r") as f:
-    data = json.load(f)
+# with open("./primetrust-public-resolved.json", "r") as f:
+#     data = json.load(f)
+try:
+    data = requests.get(
+        "https://api.primetrust.com/docs/spec/primetrust-public-resolved.json"
+    ).json()
+except Exception as err:
+    print(err)
+    exit(-1)
 
 print(data.keys())
 # dict_keys(['openapi', 'info', 'paths', 'components', 'servers', 'x-tagGroups', 'tags']) # noqa: E501
